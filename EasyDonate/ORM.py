@@ -121,10 +121,10 @@ class Transaction(DecBase):
 	__tablename__ = 'ezdonate_transactions'
 	
 	txn_id = Column(Integer, primary_key=True, autoincrement=True)
-	item_id = Column(Integer, ForeignKey('ezdonate_items.id'))
-	item = relationship('Item')
-	serv_id = Column(Integer, ForeignKey('ezdonate_servers.id'))
-	server = relationship('Server')
+	item_id = Column(Integer, ForeignKey('ezdonate_items.id', ondelete='CASCADE'))
+	item = relationship('Item', backref=backref('txns', cascade='all,delete', lazy='joined'))
+	serv_id = Column(Integer, ForeignKey('ezdonate_servers.id', ondelete='CASCADE'))
+	server = relationship('Server', backref=backref('txns', cascade='all,delete', lazy='joined'))
 	amount = Column(Float)
 	steamid = Column(String(32))
 	email = Column(String(128))
@@ -142,8 +142,8 @@ class OngoingTransaction(DecBase):
 	__tablename__ = 'ezdonate_ongoingtxns'
 	
 	pay_id = Column(String(64), primary_key=True)
-	txn_id = Column(Integer, ForeignKey('ezdonate_transactions.txn_id'))
-	transaction = relationship('Transaction')
+	txn_id = Column(Integer, ForeignKey('ezdonate_transactions.txn_id', ondelete='CASCADE'))
+	transaction = relationship('Transaction', backref=backref('ongoing', cascade='all,delete', lazy='joined'))
 	
 	def __init__(self, pay_id, txn_id):
 		self.pay_id = pay_id

@@ -573,7 +573,7 @@ def manageProducts(request):
 	if 'product.save' in request.params and validateCSRF(request):
 		arguments = list()
 		for k in request.params:
-			if 'product.' in k:
+			if 'product.' in k or 'csrf' in k:
 				continue
 			else:
 				arguments.append({k: request.params[k]})
