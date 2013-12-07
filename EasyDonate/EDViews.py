@@ -607,7 +607,7 @@ def manageProducts(request):
 			item.description = request.params['product.longdesc']
 			arguments = list()
 			for k in request.params:
-				if not 'product.' in k:
+				if not 'product.' in k and not 'csrf' in k:
 					arguments.append({k: request.params[k]})
 			item.arguments = json.dumps(arguments)
 			Settings.Session.query(Item).filter(Item.id == item.id).update({'name': item.name, 'price': item.price, 'duration': item.duration, 'shortdesc': item.shortdesc, 'description': item.description})

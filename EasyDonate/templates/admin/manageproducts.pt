@@ -208,7 +208,7 @@
 									</div>
 								</th>
 								<td class="input-row">
-									<input type="number" name="product.duration" style="width:65%;">
+									<input type="number" name="product.duration" style="width:65%;" value="${item.duration}">
 								</td>
 							</tr>
 							<tr class="margin-left">

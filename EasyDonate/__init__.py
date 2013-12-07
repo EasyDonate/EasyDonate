@@ -1,3 +1,4 @@
+__version__ = "1.0.0+dev1744"
 from pyramid.config import Configurator
 from pyramid.view import view_config
 from pyramid.events import NewRequest
