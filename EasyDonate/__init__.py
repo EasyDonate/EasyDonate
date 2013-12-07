@@ -13,7 +13,8 @@ from .ORM import DecBase, User
 
 class Config():
 	def __init__(self, configFile):
-		self.parse = ConfigParser.SafeConfigParser({'community': 'EasyDonate', 'steam_key': None, 'api_key': None, 'read_only': False, 'elasticbeanstalk': False})
+		self.parse = ConfigParser.SafeConfigParser({'community': 'EasyDonate', 'steam_key': None, 'api_key': None, 'read_only': False, 'elasticbeanstalk': False, 
+													'auth_key': None})
 		self.configFile = configFile
 		self.parse.read(configFile)
 		self.BeanStalk = self.parse.getboolean('app:main', 'elasticbeanstalk')
@@ -26,14 +27,20 @@ class Config():
 		self.Community = self.parse.get('app:main', 'community', 0)
 		self.SteamAPI = self.parse.get('app:main', 'steam_key', 0)
 		self.APIKey = self.parse.get('app:main', 'api_key', 0)
+		self.AuthKey = self.parse.get('app:main', 'auth_key', 0)
 		self.ReadOnly = self.parse.getboolean('app:main', 'read_only')
-		if not self.APIKey:
+		if self.APIKey == 'None':
 			self.APIKey = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(32))
 			self.parse.set('app:main', 'api_key', self.APIKey)
 			config = open(self.configFile, 'w+')
 			self.parse.write(config)
 			config.close()
-			
+		if self.AuthKey == 'None':
+			self.AuthKey = ''.join(random.choice(string.ascii_letters + string.digits + '-') for x in range(64))
+			self.parse.set('app:main', 'auth_key', self.AuthKey)
+			config = open(self.configFile, 'w+')
+			self.parse.write(config)
+			config.close()
 		engine = create_engine(self.DSN)
 		self.Session = scoped_session(sessionmaker(bind=engine))
 		if self.ReadOnly:
@@ -62,8 +69,7 @@ import EDDaemon
 
 def main(global_config, **settings):
 	config = Configurator(settings=settings, root_factory='.EDModels.Donate')
-	key = pbkdf2_sha512.encrypt(''.join(random.choice(string.ascii_letters + string.digits) for x in range(32)), rounds=16000, salt_size=32)
-	authn = AuthTktAuthenticationPolicy(secret=key, callback=groups)
+	authn = AuthTktAuthenticationPolicy(secret=Settings.AuthKey, callback=groups, include_ip=True, hashalg='SHA512')
 	config.include('pyramid_chameleon')
 	config.set_authentication_policy(authn)
 	config.set_authorization_policy(ACLAuthorizationPolicy())
