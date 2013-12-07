@@ -1,0 +1,29 @@
+<html metal:use-macro="load: base.pt">
+    <div metal:fill-slot="head">
+        <title>${community}Admin</title>
+	</div>
+    <div metal:fill-slot="content">
+        <div class="absolute-center">
+			<div class ="login">
+                <center>
+                <img class="logo" src="${req.static_url('EasyDonate:static/css/img/logo.png')}">
+                <br><br>
+                <form class="center" id="loginform" action="${url}" method="post">
+                <label for="username">Username:</label>
+                <br>    
+                <div class="input-group"><input class="form-control" type="text" name="login" id="login" value="${login}"/></div>
+                <br>
+                <label for="password">Password:</label>
+                <br>
+                <div class="input-group"><input class="form-control" type="password" name="password" id="password"/></div>
+				<br>
+                <input class="btn btn-primary" type="submit" name="login.submitted" value="Login"/>
+                </form>
+                <div id="result" style="position:relative;left:-3px;">
+				<font color='red'>${message}</font>
+                </div>
+                </center>
+            </div>
+        </div>
+    </div>
+</html>

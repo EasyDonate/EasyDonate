@@ -1,0 +1,17 @@
+certifi==0.0.8
+chameleon==2.14
+httplib2==0.8
+passlib==1.6.1
+pastedeploy==1.5.0
+paypalrestsdk==0.6.4
+pymysql==0.6.1
+pyramid==1.5a2
+pyramid-chameleon==0.1
+repoze.lru==0.6
+requests==2.1.0
+sqlalchemy==0.8.3
+translationstring==1.1
+venusian==1.0a8
+webob==1.2.3
+zope.deprecation==4.0.2
+zope.interface==4.0.5

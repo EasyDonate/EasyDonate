@@ -1,0 +1,38 @@
+<html metal:use-macro="load: admin.pt">
+	<div metal:fill-slot="content">
+		<div class="module-div">
+			<div class="heading">
+				<img class="float-left" src='/static/css/img/dosh.png' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Products</h3>
+				<span class="margin-left">
+					Create and manage products asigned to servers
+				</span>
+			</div>
+			<div class="margin-left">
+				<div tal:condition="servers" tal:repeat="server servers">
+					<center>
+						<h3>${server.name}</h3>
+					</center>
+					<table class="panel-table table-striped margin-bottom">
+						<thead>
+							<th scope="col">ID</th>
+							<th scope="col">Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Duration</th>
+							<th scope="col">Group</th>
+						</thead>
+						<tbody>
+							<tr tal:condition="items[server.id]" tal:repeat="item items[server.id]">
+								<td>${item.id}</td>
+								<td>${item.name}</td>
+								<td>${"%.2f" % item.price}</td>
+								<td>${'%i days' % item.duration if item.duration >= 0 else 'N/A'}</td>
+								<td>${item.group.name}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</html>

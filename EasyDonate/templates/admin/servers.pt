@@ -1,0 +1,135 @@
+<html metal:use-macro="load: admin.pt">
+	<div metal:fill-slot="content">
+		<div class="module-div" tal:condition="not action">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/computer-mainframe.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Servers</h3>
+				<span class="margin-left">
+					From here you can manage all servers associated with your community
+				</span>
+			</div>
+			<div class="margin-left">
+				<h2>Current Servers</h2>
+				<table class="panel-table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Address</th>
+							<th scope="col">Port</th>
+							<th scope="col" width="20"></th>
+							<th scope="col" width="20"></th>
+							<th scope="col" width="20"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<div tal:condition="servers">
+							<tr tal:repeat="server servers">
+								<td>${server.name}</td>
+								<td>${server.ip}</td>
+								<td>${server.port}</td>
+								<td>
+									<a href="${req.route_url('admin/products/servers', server=server.id)}">
+										<img src="${req.static_url('EasyDonate:static/css/img/dosh.png')}" width="20" height="20"/>
+									</a>
+								</td>
+								<td>
+									<a href="${req.route_url('admin/servers')}?manage=${server.id}">
+										<img src="${req.static_url('EasyDonate:static/css/img/document-edit.png')}" width="20" height="20"/>
+									</a>
+								</td>
+								<td>
+									<form method="POST" action="${req.route_url('admin/servers')}" style="display:inline;">
+										<input type="hidden" name="csrf_token" value="${req.csrf}">
+										<input type="hidden" name="del" value="${server.id}">
+										<button type="submit" style="display:inline;background:rgba(0,0,0,0);margin:0;padding:0;">
+											<img src="${req.static_url('EasyDonate:static/css/img/edit-delete-4.png')}" width="20" height="20"/>
+										</button>
+									</form>
+								</td>
+							</tr>
+						</div>
+						<tr tal:condition="not servers">
+							<td>There don't seem to be any servers</td>
+						</tr>
+					</tbody>
+				</table>
+				<a href="?addserver=True" class="blue-submit float-right">New Server</a>
+			</div>
+		</div>
+		<div class="module-div" tal:condition="action == 'addserver'">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/computer-mainframe.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Add Server</h3>
+				<span class="margin-left">
+					Adding new server
+				</span>
+			</div>
+			<div class="margin-left">
+				<h2>New Server</h2>
+				<form method="POST" action="${req.route_url('admin/servers')}">
+					<table class="table-striped" width="980">
+						<tbody>
+							<tr>
+								<th scope="row">Server Name</th>
+								<td>
+									<input class="float-right" style="width:45%;" type="text" name="server.name">
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Server Addres</th>
+								<td>
+									<input class="float-right" style="width:45%;" type="text" name="server.addr">
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Server Port</th>
+								<td>
+									<input class="float-right" style="width:45%;" type="number" min="0" max="65535" name="server.port">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<input type="submit" class="blue-submit float-right" name="add.server.submitted" value="Add Server">
+				</form>
+			</div>
+		</div>
+		<div class="module-div" tal:condition="action == 'manage'">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/computer-mainframe.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Add Server</h3>
+				<span class="margin-left">
+					Adding new server
+				</span>
+			</div>
+			<div class="margin-left">
+				<h2>Manage Server</h2>
+				<form method="POST" action="${req.route_url('admin/servers')}">
+					<input type="hidden" name="server.id" value="${server.id}">
+					<table class="table-striped" width="980">
+						<tbody>
+							<tr>
+								<th scope="row">Server Name</th>
+								<td>
+									<input class="float-right" style="width:45%;" type="text" name="server.name" value='${server.name}'>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Server Addres</th>
+								<td>
+									<input class="float-right" style="width:45%;" type="text" name="server.addr" value='${server.ip}'>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">Server Port</th>
+								<td>
+									<input class="float-right" style="width:45%;" type="number" min="0" max="65535" name="server.port" value='${server.port}'>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<input type="submit" class="blue-submit float-right" name="manage.server.submitted" value="Save Server">
+				</form>
+			</div>
+		</div>
+	</div>
+</html>

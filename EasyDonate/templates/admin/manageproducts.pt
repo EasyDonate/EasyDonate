@@ -1,0 +1,309 @@
+<html metal:use-macro="load: admin.pt" tal:define="json import: json">
+	<div metal:fill-slot="content">
+		<div tal:condition="not action" class="module-div" style="padding-bottom:16px;">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/dosh.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Manage Products</h3>
+				<span class="margin-left">
+					Create and manage products
+				</span>
+			</div>
+			<div class="margin-left">
+				<table class="panel-table">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Duration</th>
+							<th width="20"></th>
+							<th width="20"></th>
+							<th width="20"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr tal:repeat="group groups">
+							<td colspan="4" style="background-color:#f5f5f5;"><strong>Group: </strong>${group.name}</td>
+							<td style="background-color:#f5f5f5;">
+								<a href="${req.route_url('admin/products/groups')}?manage=${group.id}">
+									<img src="${req.static_url('EasyDonate:static/css/img/document-edit.png')}" width="20" height="20"/>
+								</a>
+							</td>
+							<td style="background-color:#f5f5f5;">
+								<form method="POST" action="${req.route_url('admin/products/groups')}" style="display:inline;">
+									<input type="hidden" name="csrf_token" value="${req.csrf}">
+									<input type="hidden" name="del" value="${group.id}">
+									<button type="submit" style="display:inline;background:rgba(0,0,0,0);margin:0;padding:0;">
+										<img src="${req.static_url('EasyDonate:static/css/img/edit-delete-4.png')}" width="20" height="20"/>
+									</button>
+								</form>
+							</td>
+							<tr tal:repeat="item group.items">
+								<td>${item.name}</td>
+								<td>${"%.2f" % item.price}</td>
+								<td>${'%i days' % item.duration if item.duration >= 0 else 'N/A'}</td>
+								<td>
+									<a href="${req.route_url('admin/products')}?promotions=${item.id}">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-percentage.png')}" width="20" height="20"/>
+									</a>
+								<td>
+									<a href="${req.route_url('admin/products')}?manage=${item.id}">
+										<img src="${req.static_url('EasyDonate:static/css/img/document-edit.png')}" width="20" height="20"/>
+									</a>
+								</td>
+								<td>
+									<form method="POST" action="${req.route_url('admin/products')}" style="display:inline;">
+										<input type="hidden" name="csrf_token" value="${req.csrf}">
+										<input type="hidden" name="del" value="${item.id}">
+										<button type="submit" style="display:inline;background:rgba(0,0,0,0);margin:0;padding:0;">
+											<img src="${req.static_url('EasyDonate:static/css/img/edit-delete-4.png')}" width="20" height="20"/>
+										</button>
+									</form>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">
+									<div style="text-align:right;">
+										<a href="${req.route_url('admin/products')}?add=${group.id}">
+											<img src="${req.static_url('EasyDonate:static/css/img/edit-add-2.png')}" width="20" height="20"/>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</tr>
+					</tbody>
+				</table>
+				<a class="blue-submit float-right" href="${req.route_url('admin/products/groups')}?new.group=true">New Group</a>
+			</div>
+		</div>
+		<div tal:condition="action and action.action == 'add'" tal:define="json import: json" class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/dosh.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">New Product</h3>
+				<span class="margin-left">
+					Create a new product
+				</span>
+			</div>
+			<div class="margin-left">
+				<br><br>
+				<label>${group.name}</label>
+				<form method="POST" action="${req.route_url('admin/products')}" tal:define="fields json.loads(group.values)">
+					<input type="hidden" value="${group.id}" name="product.gid">
+					<input type="hidden" name="csrf_token" value="${req.csrf}">
+					<table class="striped-table" width="980">
+						<tbody>
+							<tr class="margin-left">
+								<th scope="row">Product Name</th>
+								<td class="input-row">
+									<input type="text" name="product.name" style="width:65%;">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">Product Price</th>
+								<td class="input-row">
+									<input type="number" name="product.price" style="width:65%;" step="0.01" min="0">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Product Duration (days)
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is the duration that the benefits of this product should be active for
+											<br><br>
+											You can use -1 for products that shouldn't expire
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<input type="number" name="product.duration" style="width:65%;">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Product Short Description
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is a short description that is displayed on the main donation page.
+											<br><br>
+											It should give users a quick idea of what this product is
+											<br><br>
+											This field supports BBCode
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<textarea name="product.shortdesc" maxlength="255" style="width:65%;height:80px;"></textarea>
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Product Description
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is a longer description, that will be shown on the product details page
+											<br><br>
+											It should give users a more in-depth description of the details of the product
+											than the short description does
+											<br><br>
+											This field supports BBCode
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<textarea name="product.longdesc" maxlength="2048" style="width:65%;"></textarea>
+								</td>
+							</tr>
+							<tr tal:repeat="field fields">
+								<th scope="row">${field}</th>
+								<td class="input-row">
+									<input type="text" name="${field}" style="width:65%;">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<input type="submit" class="blue-submit" name="product.save" value="Save Product">
+				</form>
+			</div>
+		</div>
+		<div tal:condition="action and action.action == 'manage'" tal:define="json import: json" class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/dosh.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Manage Product</h3>
+				<span class="margin-left">
+					Manage an existing product
+				</span>
+			</div>
+			<div class="margin-left">
+				<br><br>
+				<form method="POST" action="${req.route_url('admin/products')}" tal:define="fields json.loads(item.arguments)">
+					<input type="hidden" name="product.id" value="${item.id}">
+					<input type="hidden" name="csrf_token" value="${req.csrf}">
+					<table class="striped-table" width="980">
+						<tbody>
+							<tr class="margin-left">
+								<th scope="row">Product Name</th>
+								<td class="input-row">
+									<input type="text" name="product.name" style="width:65%;" value="${item.name}">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">Product Price</th>
+								<td class="input-row">
+									<input type="number" name="product.price" style="width:65%;" step="0.01" min="0" value="${item.price}">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Product Duration (days)
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is the duration that the benefits of this product should be active for
+											<br><br>
+											You can use -1 for products that shouldn't expire
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<input type="number" name="product.duration" style="width:65%;">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Product Short Description
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is a short description that is displayed on the main donation page.
+											<br><br>
+											It should give users a quick idea of what this product is
+											<br><br>
+											This field supports BBCode
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<textarea name="product.shortdesc" maxlength="255" style="width:65%;height:80px;">${item.shortdesc}</textarea>
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Product Description
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is a longer description, that will be shown on the product details page
+											<br><br>
+											It should give users a more in-depth description of the details of the product
+											than the short description does
+											<br><br>
+											This field supports BBCode
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<textarea name="product.longdesc" maxlength="2048" style="width:65%;">${item.description}</textarea>
+								</td>
+							</tr>
+							<tr tal:repeat="field fields">
+								<tal:block tal:define="key field.keys()[0]">
+								<th scope="row">${key}</th>
+								<td class="input-row">
+									<input type="text" name="${field}" style="width:65%;" value="${field[key]}">
+								</td>
+								</tal:block>
+							</tr>
+						</tbody>
+					</table>
+					<input type="submit" class="blue-submit float-right" name="save.submitted" value="Save Changes">
+				</form>
+				<br><br>
+			</div>
+		</div>
+		<div tal:condition="action and action.action == 'promotions'" tal:define="json import: json" class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/dosh.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Manage Product Promotions</h3>
+				<span class="margin-left">
+					Here you can asign promotions to a product
+				</span>
+			</div>
+			<div class="margin-left">
+				<br>
+				<form method="POST" action="${req.route_url('admin/products')}">
+				<input type="hidden" name="item.id" value="${action.item.id}">
+				<table class="panel-table">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Value</th>
+							<th scope="col">Code</th>
+							<th scope="col">Expires</th>
+							<th width="20"></th>
+						</tr>
+					</thead>
+					<tbody tal:define="datetime import: datetime">
+						<tr tal:repeat="group action.promogroups">
+							<td colspan="6" style="background-color:#f5f5f5;"><strong>Group: </strong>${group.name}</td>
+							<tr tal:repeat="promotion group.promotions">
+								<td>${promotion.name}</td>
+								<td>${promotion.value}</td>
+								<td tal:condition="group.requires_code">${promotion.code}</td>
+								<td tal:condition="not group.requires_code">N/A</td>
+								<td>${datetime.datetime.fromtimestamp(promotion.expires).strftime('%Y-%m-%d')}</td>
+								<td>
+									<input type="checkbox" name="promo-${promotion.id}" tal:attributes="checked 'true' if promotion in [promoitem.promotion for promoitem in action.item.promotions] else nothing">
+								</td>
+							</tr>
+						</tr>
+					</tbody>
+				</table>
+				<input type="submit" class="blue-submit float-right" name="promotions.submitted" value="Save Changes">
+				</form>
+			</div>
+		</div>
+	</div>
+</html>

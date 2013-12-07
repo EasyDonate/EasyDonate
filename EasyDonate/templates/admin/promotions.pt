@@ -1,0 +1,194 @@
+<html metal:use-macro="load: admin.pt">
+	<div metal:fill-slot="content">
+		<div tal:condition="not action" class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/emblem-percentage.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Manage Promotions</h3>
+				<span class="margin-left">
+					Create and manage promotions
+				</span>
+			</div>
+			<div class="margin-left">
+				<table class="panel-table">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Value</th>
+							<th scope="col">Code</th>
+							<th scope="col">Expires</th>
+							<th width="20"></th>
+							<th width="20"></th>
+						</tr>
+					</thead>
+					<tbody tal:define="datetime import: datetime">
+						<tr tal:repeat="group groups">
+							<td colspan="6" style="background-color:#f5f5f5;"><strong>Group: </strong>${group.name}</td>
+							<tr tal:repeat="promotion group.promotions">
+								<td>${promotion.name}</td>
+								<td>${promotion.value}</td>
+								<td tal:condition="group.requires_code">${promotion.code}</td>
+								<td tal:condition="not group.requires_code">N/A</td>
+								<td>${datetime.datetime.fromtimestamp(promotion.expires).strftime('%Y-%m-%d')}</td>
+								<td>
+									<a href="${req.route_url('admin/promotions')}?manage=${promotion.id}">
+										<img src="${req.static_url('EasyDonate:static/css/img/document-edit.png')}" width="20" height="20"/>
+									</a>
+								</td>
+								<td>
+									<form method="POST" action="${req.route_url('admin/promotions')}" style="display:inline;">
+										<input type="hidden" name="csrf_token" value="${req.csrf}">
+										<input type="hidden" name="del" value="${promotion.id}">
+										<button type="submit" style="display:inline;background:rgba(0,0,0,0);margin:0;padding:0;">
+											<img src="${req.static_url('EasyDonate:static/css/img/edit-delete-4.png')}" width="20" height="20"/>
+										</button>
+									</form>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">
+									<div style="text-align:right;">
+										<a href="${req.route_url('admin/promotions')}?add=${group.id}">
+											<img src="${req.static_url('EasyDonate:static/css/img/edit-add-2.png')}" width="20" height="20"/>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div tal:condition="action and action.action == 'add'" class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/emblem-percentage.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Create Promotion</h3>
+				<span class="margin-left">
+					Creating a promotion
+				</span>
+			</div>
+			<br>
+			<div class="margin-left">
+				<form method="POST" action="${req.route_url('admin/promotions')}">
+					<input type="hidden" name="csrf_token" value="${req.csrf}">
+					<input type="hidden" name="group.id" value="${action.group.id}">
+					<table class="striped-table" width="980">
+						<tbody>
+							<tr class="margin-left">
+								<th scope="row">Promotion Name</th>
+								<td class="input-row">
+									<input type="text" name="promotion.name" style="width:65%;">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Promotion Value
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is the promotion value
+											<br><br>
+											You can either enter a number, in which case that number will be subtracted from the items price,
+											or a percentage followed by a percent sign (%) in which case that will be the percentage off from
+											the regular price
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<input type="text" name="promotion.value" style="width:65%;">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">Promotion Expiry</th>
+								<td class="input-row">
+									<input type="date" name="promotion.expiry" style="width:65%;">
+								</td>
+							</tr>
+							<tr class="margin-left" tal:condition="action.group.requires_code">
+								<th scope="row">
+									Promo Code
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is a promo code clients will be required to enter to take advantange of this promotion
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<input type="text" name="promotion.code" style="width:65%;">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<input type="submit" class="blue-submit float-right" name="save.submitted" value="Save Promotion">
+				</form>
+			</div>
+		</div>
+		<div tal:condition="action and action.action == 'manage'" tal:define="datetime import: datetime" class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/emblem-percentage.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Manage Promotion</h3>
+				<span class="margin-left">
+					Managing a promotion
+				</span>
+			</div>
+			<br>
+			<div class="margin-left">
+				<form method="POST" action="${req.route_url('admin/promotions')}">
+					<input type="hidden" name="csrf_token" value="${req.csrf}">
+					<input type="hidden" name="promotion.id" value="${action.promotion.id}">
+					<table class="striped-table" width="980">
+						<tbody>
+							<tr class="margin-left">
+								<th scope="row">Promotion Name</th>
+								<td class="input-row">
+									<input type="text" name="promotion.name" style="width:65%;" value="${action.promotion.name}">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">
+									Promotion Value
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is the promotion value
+											<br><br>
+											You can either enter a number, in which case that number will be subtracted from the items price,
+											or a percentage followed by a percent sign (%) in which case that will be the percentage off from
+											the regular price
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<input type="text" name="promotion.value" style="width:65%;" value="${action.promotion.value}">
+								</td>
+							</tr>
+							<tr class="margin-left">
+								<th scope="row">Promotion Expiry</th>
+								<td class="input-row">
+									<input type="date" name="promotion.expiry" style="width:65%;" value="${datetime.datetime.fromtimestamp(action.promotion.expires).strftime('%Y-%m-%d')}">
+								</td>
+							</tr>
+							<tal:block tal:condition="groups[action.promotion.type - 1].requires_code">
+							<tr class="margin-left">
+								<th scope="row">
+									Promo Code
+									<div class="help-icon">
+										<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+										<div class="tooltip">
+											This is a promo code clients will be required to enter to take advantange of this promotion
+										</div>
+									</div>
+								</th>
+								<td class="input-row">
+									<input type="text" name="promotion.code" style="width:65%;">
+								</td>
+							</tr>
+							</tal:block>
+						</tbody>
+					</table>
+					<input type="submit" class="blue-submit float-right" name="update.submitted" value="Update Promotion">
+				</form>
+			</div>
+		</div>
+	</div>
+</html>

@@ -1,0 +1,81 @@
+<html metal:use-macro="load: admin.pt">
+	<div metal:fill-slot="content">
+		<div class="module-div">
+			<div class="heading">
+				<img class="float-left" src='/static/css/img/dosh.png' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Product Groups</h3>
+				<span class="margin-left">
+					Create and manage product groups
+				</span>
+			</div>
+			<div tal:condition="action == 'newgroup'" class="margin-left">
+				<h3>New Group</h3>
+				<form method="POST" id="values" action="${req.route_url('admin/products/groups')}" class="new-group">
+					<label>Name:</label>
+					<input type='text' name='groupname' placeholder='Group Name'/>
+					<br>
+					<label>
+						Fields
+						<div class="help-icon">
+							<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+							<div class="tooltip">
+								These are the fields that you will need to set for products in this group
+								<br><br>
+								An example would be having a field 'flags' for a group that provides admin on servers
+							</div>
+						</div>
+					</label>
+					<table class="panel-striped-table fieldtable" style="text-align:center;" width="980">
+					<thead>
+						<tr>
+							<th scope='col'><label style="font-weight:200;">Field Name</label></th>
+							<th scope='col' width="20"></th>
+						</tr>
+					</thead>
+					<tr></tr>
+					</table>
+					<a href="javascript:void(0);" onclick="addField('#values')" class="blue-submit">Add Field</a>
+					<input type="submit" class="blue-submit" style="margin-left:42px;" name="newgroup.form.submitted" value="Save Group"/>
+				</form>
+			</div>
+			<div tal:condition="action == 'manage' and group" tal:define="json import: json" class="margin-left">
+				<h3>Manage Group</h3>
+				<form tal:define="fields json.loads(group.values)" action='${req.route_url("admin/products/groups")}' method="POST" id="values" class="new-group">
+					<label>Name:</label>
+					<input type='text' name='groupname' value='${group.name}' readonly />
+					<input type='hidden' name='groupid' value='${group.id}' />
+					<br>
+					<label>
+						Fields
+						<div class="help-icon">
+							<img src="${req.static_url('EasyDonate:static/css/img/emblem-notice.png')}" width="14" height="14"/>
+							<div class="tooltip">
+								These are the fields that you will need to set for products in this group
+								<br><br>
+								An example would be having a field 'flags' for a group that provides admin on servers
+							</div>
+						</div>
+					</label>
+					<table class="panel-striped-table fieldtable" style="text-align:center;" width="980">
+					<thead>
+						<tr>
+							<th scope='col'><label style="font-weight:200;">Field Name</label></th>
+							<th scope='col' width="20"></th>
+						</tr>
+					</thead>
+					<tr tal:repeat="field fields">
+						<td><input type="text" style="width:65%" value="${field}" name="fname-${fields.index(field) + 1}" id="fname-${fields.index(field) + 1}" ></td>
+						<td>
+							<a href="javascript:void(0)" onclick="removeValue('#fname-${fields.index(field) + 1}')">
+								<img src="${req.static_url('EasyDonate:static/css/img/edit-delete-4.png')}" width="20" height="20"/>
+							</a>
+						</td>
+					</tr>
+					</table>
+					<a href="javascript:void(0);" onclick="addField('#values')" class="blue-submit">Add Field</a>
+					<input type="submit" class="blue-submit" style="margin-left:42px;" name="savegroup.form.submitted" value="Save Group"/>
+				</form>
+			</div>
+		</div>
+	</div>
+</html>

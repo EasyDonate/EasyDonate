@@ -1,0 +1,78 @@
+<html metal:use-macro="load: base.pt">
+	<div metal:fill-slot="head">
+		<title>${community} Donate</title>
+	</div>
+	<div metal:fill-slot="content">
+		<script>
+			$(function(){
+				$('#promocode').tooltip();
+			});
+		</script>
+		<div class="home-content container">
+			<ol class="breadcrumb" style="background:#fff;margin:24px;text-align:center;">
+				<tal:block tal:repeat="link path" >
+				<li tal:attributes="class 'active' if(link.active) else 'nothing'">
+					<a tal:condition="not link.active" href='${link.href}'>${link.name}</a>
+					<tal:block tal:condition="link.active">${link.name}</tal:block>
+				</li>
+				</tal:block>
+			</ol>
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div class="row" style="margin:24px;">
+						<div class="col-md-4" tal:define="bbcode import: EasyDonate.bbcode">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<center>
+										<h3>${item.name}</h3>
+									</center>
+									<ul class="list-group">
+										<li class="list-group-item">
+											<div class="list-group-item-text">
+												<strong>Price:</strong>
+												$${"%.2f" % price}
+											</div>
+										</li>
+									</ul>
+									<span tal:content="structure bbcode.render_html(item.description.strip())"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6 col-md-offset-2">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<center>
+										<h3>Purchasing ${item.name} for server ${server.name}</h3>
+									</center>
+									<form class="form-horizontal" method="POST" action="${req.route_url('order', product=req.matchdict['product'], server=req.matchdict['server'])}">
+										<div tal:attributes="class 'form-group has-error' if 'steamid' in errors else 'form-group'">
+											<label for="input.steam" class="col-md-4 control-label">Steam ID</label>
+											<div class="input-group">
+												<input type="text" name="input.steamid" class="form-control" placeholder="SteamID">
+											</div>
+										</div>
+										<div tal:attributes="class 'form-group has-error' if 'email' in errors else 'form-group'">
+											<label for="input.email" class="col-md-4 control-label">Email</label>
+											<div class="input-group">
+												<input type="email" name="input.email" class="form-control" placeholder="Email">
+											</div>
+										</div>
+										<div tal:attributes="class 'form-group has-error' if 'promo' in errors else 'form-group'">
+											<label for="input.promo" class="col-md-4 control-label">Promo Code</label>
+											<div class="input-group">
+												<input id='promocode' data-toggle="tooltip" data-placement="top" title data-original-title="Enter a promotional code, if you have one" type="text" name="input.code" class="form-control" placeholder="Code">
+											</div>
+										</div>
+										<center>
+											<input class="btn btn-primary" name='form.submitted' type="submit" value="Continue">
+										</center>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</html>

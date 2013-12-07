@@ -1,0 +1,29 @@
+<html metal:use-macro="load: base.pt">
+	<div metal:fill-slot="content">
+		<div class="home-content container">
+			<div class="jumbotron" tal:condition="error" style="margin:24px;">
+				<center>
+					<h1><span class="glyphicon glyphicon-warning-sign"></span></h1>
+					<p>
+						There was an error processing your request, you have not been charged.
+					</p>
+					<p>
+						Please return to the order form and try again
+					</p>
+				</center>
+			</div>
+			<div class="jumbotron" tal:condition="not error" style="margin:24px;">
+				<center>
+					<h1><span class="glyphicon glyphicon-check"></span></h1>
+					<p>
+						Your payment has been completed.
+					</p>
+					<p>
+						Please allow up to 24 hours for you payment to be processed
+					</p>
+					<a href="${req.route_url('home')}"><button class="btn btn-primary"><span class="glyphicon glyphicon-home"></span> Return</button></a>
+				</center>
+			</div>
+		</div>
+	</div>
+</html>

@@ -1,0 +1,65 @@
+<html metal:use-macro="load: admin.pt">
+	<div metal:fill-slot="content">
+		<div class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/emblem-system-2.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left: 50px;">Configuration</h3>
+				<span class="margin-left">
+					From here you can configure the EasyDonate application
+				</span>
+			</div>
+			<div class="margin-left">
+				<br>
+				<form method="POST">
+				<input type="hidden" name="csrf_token" value="${req.csrf}">
+				<table class='panel-table'>
+					<tbody>
+						<tr>
+							<td colspan="10" style="background:#f5f5f5;text-align:center;"><h2 class="no-margin">General Config</h2></td>
+						</tr>
+						<tr>
+							<th scope="row">Community Name</th>
+							<th><input type="text" name="config.community" value="${community}"></th>
+						</tr>
+						<tr>
+							<th scope="row">Steam API Key</th>
+							<th><input type="text" style="width:500px;" name="config.steamkey" value="${settings.SteamAPI}"></th>
+						</tr>
+						<tr>
+							<th scope="row">Donate API Key</th>
+							<th><input type="text" style="width:500px;" value="${settings.APIKey}" readonly></th>
+						</tr>
+						<tr>
+							<th scope="row">Regenerate API Key</th>
+							<th><input type="checkbox" name="config.regenerate" value="regen.key"></th>
+						</tr>
+						<tr>
+							<td colspan="10" style="background:#f5f5f5;text-align:center;"><h2 class="no-margin">PayPal Config</h2></td>
+						</tr>
+						<tr>
+							<th scope="row">PayPal Mode</th>
+							<th>
+								<select name="paypal.mode">
+									<option tal:attributes="selected settings.parse.get('app:paypal', 'mode', 0) == 'sandbox' | nothing" value="sandbox">Sandbox</option>
+									<option tal:attributes="selected settings.parse.get('app:paypal', 'mode', 0) == 'live' | nothing" value="live">Live</option>
+								</select>
+							</th>
+						</tr>
+						<tr>
+							<th scope="row">PayPal Client ID</th>
+							<th><input style="width:500px;" name="paypal.client_id" value="${settings.parse.get('app:paypal', 'client_id', 0)}" type="text" /></th>
+						</tr>
+						<tr>
+							<th scope="row">PayPal Secret Key</th>
+							<th><input style="width:500px;" name="paypal.secret" value="${settings.parse.get('app:paypal', 'client_secret', 0)}" type="text" /></th>
+						</tr>
+					</tbody>
+				</table>
+				<br>
+				<input type="submit" class="blue-submit float-right" name="form.submitted" value="Save Changes"/>
+				</form>
+				<br><br>
+			</div>
+		</div>
+	</div>
+</html>

@@ -1,0 +1,18 @@
+[DEFAULT]
+read_only = False
+api_key = None
+steam_key = None
+community = EasyDonate
+elasticbeanstalk = False
+
+[app:main]
+community = Community
+dsn = mysql+pymysql://user:password@localhost:3306/easydonate
+steam_key = XXXXXXXXXXXXXXXXXXXXXXX
+read_only = False
+
+[app:paypal]
+mode = sandbox
+client_id = XXXXXXXXXXXXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXX
+client_secret = XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-XXXXXXXXXXXXXXXX
+

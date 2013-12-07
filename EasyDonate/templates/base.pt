@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+      ___           ___           ___           ___           ___           ___           ___           ___           ___           ___     
+     /\  \         /\  \         /\  \         |\__\         /\  \         /\  \         /\__\         /\  \         /\  \         /\  \    
+    /::\  \       /::\  \       /::\  \        |:|  |       /::\  \       /::\  \       /::|  |       /::\  \        \:\  \       /::\  \   
+   /:/\:\  \     /:/\:\  \     /:/\ \  \       |:|  |      /:/\:\  \     /:/\:\  \     /:|:|  |      /:/\:\  \        \:\  \     /:/\:\  \  
+  /::\~\:\  \   /::\~\:\  \   _\:\~\ \  \      |:|__|__   /:/  \:\__\   /:/  \:\  \   /:/|:|  |__   /::\~\:\  \       /::\  \   /::\~\:\  \ 
+ /:/\:\ \:\__\ /:/\:\ \:\__\ /\ \:\ \ \__\     /::::\__\ /:/__/ \:|__| /:/__/ \:\__\ /:/ |:| /\__\ /:/\:\ \:\__\     /:/\:\__\ /:/\:\ \:\__\
+ \:\~\:\ \/__/ \/__\:\/:/  / \:\ \:\ \/__/    /:/~~/~    \:\  \ /:/  / \:\  \ /:/  / \/__|:|/:/  / \/__\:\/:/  /    /:/  \/__/ \:\~\:\ \/__/
+  \:\ \:\__\        \::/  /   \:\ \:\__\     /:/  /       \:\  /:/  /   \:\  /:/  /      |:/:/  /       \::/  /    /:/  /       \:\ \:\__\  
+   \:\ \/__/        /:/  /     \:\/:/  /     \/__/         \:\/:/  /     \:\/:/  /       |::/  /        /:/  /     \/__/         \:\ \/__/  
+    \:\__\         /:/  /       \::/  /                     \::/__/       \::/  /        /:/  /        /:/  /                     \:\__\    
+     \/__/         \/__/         \/__/                       ~~            \/__/         \/__/         \/__/                       \/__/ 
+
+	WARNING: HITCHHIKERS MAY BE ESCAPED CONVICTS
+!-->
+<html>
+	<head>
+		<link href="${req.static_url('EasyDonate:static/css/home.css')}" rel="stylesheet" type="text/css">
+		<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,400,700,800,600,300' rel='stylesheet' type='text/css'>
+		<link href="${req.static_url('EasyDonate:static/bootstrap/css/bootstrap.min.css')}" rel="stylesheet" type="text/css">
+		<script src="${req.static_url('EasyDonate:static/lib/jquery.min.js')}"></script>
+		<script src="${req.static_url('EasyDonate:static/bootstrap/js/bootstrap.min.js')}"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>${community} Donate</title>
+	</head>
+	<body style="background: url('${req.static_url('EasyDonate:static/css/img/squairy_light.png')}') repeat;">
+		<div metal:define-slot="content"></div>
+		<div class="footer">
+			<a href="http://steamcommunity.com/id/Dreae/" target="_blank"><img class="logo" src="${req.static_url('EasyDonate:static/css/img/logo.png')}"></a>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,24 @@
+<html metal:use-macro="load: base.pt">
+	<div metal:fill-slot="content">
+		<div class="home-content container">
+			<div class="jumbotron" tal:condition="error" style="margin:24px;">
+				<center>
+					<h1><span class="glyphicon glyphicon-warning-sign"></span></h1>
+					<p>
+						There was an error processing your request
+					</p>
+					<a href="${req.route_url('home')}"><button class="btn btn-primary"><span class="glyphicon glyphicon-home"></span> Return</button></a>
+				</center>
+			</div>
+			<div class="jumbotron" tal:condition="not error" style="margin:24px;">
+				<center>
+					<h1><span class="glyphicon glyphicon-check"></span></h1>
+					<p>
+						Your payment has been canceled.
+					</p>
+					<a href="${req.route_url('home')}"><button class="btn btn-primary"><span class="glyphicon glyphicon-home"></span> Return</button></a>
+				</center>
+			</div>
+		</div>
+	</div>
+</html>

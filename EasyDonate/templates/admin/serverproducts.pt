@@ -1,0 +1,84 @@
+<html metal:use-macro="load: admin.pt">
+	<div metal:fill-slot="content">
+		<div class="module-div" tal:condition="not action">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/computer-mainframe.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Server Products</h3>
+				<span class="margin-left">
+					From here you can all of the products for a given server
+				</span>
+			</div>
+			<div class="margin-left">
+				<br><br>
+				<font size="4"><strong>Server:</strong> ${server.name}</font>
+				<br><br>
+				<form method="POST">
+					<table class="panel-table">
+						<thead>
+							<th scope="col">Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Duration</th>
+							<th scope="col" width="20"></th>
+						</thead>
+						<tbody>
+							<tr tal:repeat="group list(set([i.item.group for i in server.items]))">
+								<td colspan="4" style="background-color:#f5f5f5;"><strong>Group: </strong>${group.name}</td>
+								<tr tal:repeat="item [i.item if i.item.group.id is group.id else None for i in server.items]">
+									<tal:block tal:condition="item">
+									<td>${item.name}</td>
+									<td>${"%.2f" % item.price}</td>
+									<td>${item.duration}</td>
+									<td>
+										<input type="checkbox" value='${item.id}' name="delete-${item.id}">
+									</td>
+									</tal:block>
+								</tr>
+							</tr>
+						</tbody>
+					</table>
+					<input type="submit" class="blue-submit float-right" name="delete.selected" value="Remove Selected">
+					<a class="blue-submit float-right" href="${req.route_url('admin/products/servers', server=server.id)}?add=true">Add Products</a>
+				</form>
+			</div>
+		</div>
+		<div class="module-div" tal:condition="action == 'addproducts'">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/computer-mainframe.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left:50px;">Server Products</h3>
+				<span class="margin-left">
+					From here you can all of the products for a given server
+				</span>
+			</div>
+			<div class="margin-left">
+				<form method="POST" action="${req.route_url('admin/products/servers', server=server.id)}">
+				<table class="panel-table">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Price</th>
+							<th scope="col">Duration</th>
+							<th width="20"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr tal:repeat="group groups">
+							<td colspan="4" style="background-color:#f5f5f5;"><strong>Group: </strong>${group.name}</td>
+							<tr tal:repeat="item group.items">
+								<tal:block tal:condition="not item in [i.item for i in server.items]">
+								<td>${item.name}</td>
+								<td>${"%.2f" % item.price}</td>
+								<td>${item.duration} days</td>
+								<td>
+									<input type="checkbox" value="${item.id}" name="add-${item.id}"/>
+								</td>
+								</tal:block>
+							</tr>
+						</tr>
+					</tbody>
+				</table>
+				<input type="submit" class="blue-submit float-right" name="save.newproducts">
+				</form>
+			</div>
+		</div>
+	</div>
+</html>

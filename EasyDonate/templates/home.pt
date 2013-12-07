@@ -1,0 +1,54 @@
+<html metal:use-macro="load: base.pt"  tal:define="time import: time">
+	<div metal:fill-slot="content">
+		<div class="home-content container">
+			<ol class="breadcrumb" style="background:#fff;margin:24px;text-align:center;" tal:condition="servers">
+				<tal:block tal:repeat="server servers" >
+				<li tal:attributes="class 'active' if(server.id == here) else 'nothing'">
+					<a tal:condition="server.id != here" href='?sid=${server.id}'>${server.name}</a>
+					<tal:block tal:condition="server.id == here">${server.name}</tal:block>
+				</li>
+				</tal:block>
+			</ol>
+			<tal:block tal:condition="here != None">
+			<div tal:condition="products" tal:define="bbcode import: EasyDonate.bbcode" class="products">
+				<div class="product" tal:repeat="product products">
+					<div class="row" tal:define="promotions [promoitem.promotion for promoitem in product.promotions if promoitem.promotion.type == 1 and time.time() < promoitem.promotion.expires]">
+						<div class="col-md-8" style="height:100%;">
+							<strong>${product.name}</strong>
+							<br>
+							<span tal:content="structure bbcode.render_html(product.shortdesc.strip())"></span>
+						</div>
+						<div class="col-md-4" style="text-align:center;">
+							<p>
+								<span tal:attributes="class 'label label-danger' if promotions else 'label label-default'">
+									$<font tal:attributes="class 'strike-through' if promotions else nothing">${"%.2f" % product.price}</font>
+								</span>
+								<div tal:condition="promotions" class="sale">
+									Sale
+								</div>
+							</p>
+							<a href="${req.route_url('order', server=here, product=product.id)}">
+								<button type="button" class="btn btn-primary">
+									<span class="glyphicon glyphicon-shopping-cart"></span> Order
+								</button>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div tal:condition="not products" class="jumbotron">
+				<center><h1><span class="glyphicon glyphicon-bullhorn"></span></h1></center>
+				<h2>This server has no configured products</h2>
+				<p>But fear not, you can check out one of our other servers by using the navigation bar at the top</p>
+			</div>
+			</tal:block>
+			<tal:block tal:condition="here == None">
+			<div tal:condition="not products" class="jumbotron">
+				<center><h1><span class="glyphicon glyphicon-bullhorn"></span></h1></center>
+				<h2>Welcome to the ${community} Donation Page</h2>
+				<p>Please select a server from the navigation bar at the top to start shopping</p>
+			</div>
+			</tal:block>
+		</div>
+	</div>
+</html>

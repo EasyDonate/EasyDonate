@@ -1,0 +1,64 @@
+<html metal:use-macro="load: base.pt">
+	<div metal:fill-slot="head">
+		<title>${community} Donate</title>
+	</div>
+	<div metal:fill-slot="content">
+		<div class="home-content container">
+			<ol tal:condition="not error" class="breadcrumb" style="background:#fff;margin:24px;text-align:center;">
+				<tal:block tal:repeat="link path" >
+				<li tal:attributes="class 'active' if(link.active) else 'nothing'">
+					<a tal:condition="not link.active" href='${link.href}'>${link.name}</a>
+					<tal:block tal:condition="link.active">${link.name}</tal:block>
+				</li>
+				</tal:block>
+			</ol>
+			<div class="jumbotron" tal:condition="error" style="margin:24px;">
+				<center>
+					<h1><span class="glyphicon glyphicon-warning-sign"></span></h1>
+					<p>
+						There was an error processing your request.
+					</p>
+					<p>
+						Please return to the order form and try again
+					</p>
+				</center>
+			</div>
+			<div class="panel panel-default" tal:condition="not error">
+				<div class="panel-heading">Please Check Your Order</div>
+				<div class="panel-body">
+					<ul class="list-group">
+						<li class="list-group-item"><strong>Item: </strong>${item.name}</li>
+						<li class="list-group-item"><strong>Server: </strong>${server.name}</li>
+						<li class="list-group-item">
+							<strong>SteamID:</strong> ${steamid}<img style="margin-left:20px;" class="img-rounded" src="${user.avatar}"></img><small class="text-muted">${user.name}</small>
+						</li>
+						<li class="list-group-item"><strong>Email: </strong>${email}</li>
+						<li class="list-group-item"><strong>Price: </strong>${price}</li>
+					</ul>
+					<tal:block condition="promotions">
+					<br>
+					<h4>Applied Promotions</h4>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>Promotion</th>
+								<th>Type</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr tal:repeat="promotion promotions">
+								<td>${promotion.name}</td>
+								<td>${'Sale' if promotion.type == 1 else 'Promo Code'}</td>
+								<td>${'$' + promotion.value if '%' not in promotion.value else promotion.value}</td>
+							</tr>
+						</tbody>
+					</table>
+					</tal:block>
+					<br>
+					<a href="${req.route_url('confirm')}?checkout=True"><button class="btn btn-primary"><span class="glyphicon glyphicon-forward"></span>Continue</button></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</html>

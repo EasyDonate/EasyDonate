@@ -1,0 +1,92 @@
+<html metal:use-macro="load: admin.pt">
+	<div metal:fill-slot="content">
+		<div class="module-div">
+			<div class="heading">
+				<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/user-idle.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+				<h3 class="no-margin" style="margin-left: 50px;">Users</h3>
+				<span class="margin-left">
+					From here you can manage the users of you application
+				</span>
+			</div>
+			<div class="margin-left">
+				<h2>Current Users</h2>
+				<table class="panel-table table-striped">
+					<thead>
+						<tr>
+							<th scope="col">Name</th>
+							<th scope="col">Email</th>
+							<th scope="col">Steam</th>
+							<th scope="col">Group</th>
+							<th scope="col" width="20"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<div tal:condition="users">
+							<tr tal:repeat="user users">
+								<td>${user.user}</td>
+								<td>${user.email}</td>
+								<td>${user.steam}</td>
+								<td>${user.groups}</td>
+								<td>
+									<div tal:condition="user.user != context.userid">
+										<form method="POST" action="${req.route_url('admin/users')}" style="display:inline;">
+											<input type="hidden" name="csrf_token" value="${req.csrf}">
+											<input type="hidden" name="del" value="${user.id}">
+											<button type="submit" style="display:inline;background:rgba(0,0,0,0);margin:0;padding:0;">
+												<img src="${req.static_url('EasyDonate:static/css/img/edit-delete-4.png')}" width="20" height="20"/>
+											</button>
+										</form>
+									</div>
+								</td>
+							</tr>
+						</div>
+					</tbody>
+				</table>
+				<br><br>
+				<h2>Add a User</h2>
+				<table class="striped-table margin-bottom" width="600">
+					<form method="POST" action="${req.route_url('admin/users')}">
+					<input type="hidden" name="csrf_token" value="${req.csrf}">
+					<input type="hidden" name="form.submitted" value="true">
+					<tbody>
+						<tr class="margin-left">
+							<th scope="row">User Name:</th>
+							<td class="input-row">
+								<input type="text" name="username" size="80">
+							</td>
+						</tr>
+						<tr class="margin-left">
+							<th scope="row">User Password:</th>
+							<td class="input-row">
+								<input type="password" name="password" size="80">
+							</td>
+						</tr>
+						<tr class="margin-left">
+							<th scope="row">Repeat Password:</th>
+							<td class="input-row">
+								<input type="password" name="repeatpass" size="80">
+							</td>
+						</tr>
+						<tr class="margin-left">
+							<th scope="row">User Group:</th>
+							<td class="input-row">
+								<select name="usergroup">
+									<option value="admin">Admin</option>
+									<option tal:condition="permission == 'root'" value="superadmin">SuperAdmin</option>
+								</select>
+							</td>
+						</tr>
+						<tr></tr>
+						<tr>
+							<th><div tal:condition="error"><font color="red">${error}</font></div></th>
+							<td>
+								<input class="blue-submit" style="float:right" type="submit" value="Create User">
+							</td>
+						</tr>
+					</tbody>
+					</form>
+				</table>
+			</div>
+		</div>
+	</div>
+</html>

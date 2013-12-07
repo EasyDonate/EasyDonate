@@ -1,0 +1,108 @@
+<!--
+      ___           ___           ___           ___           ___           ___           ___           ___           ___           ___     
+     /\  \         /\  \         /\  \         |\__\         /\  \         /\  \         /\__\         /\  \         /\  \         /\  \    
+    /::\  \       /::\  \       /::\  \        |:|  |       /::\  \       /::\  \       /::|  |       /::\  \        \:\  \       /::\  \   
+   /:/\:\  \     /:/\:\  \     /:/\ \  \       |:|  |      /:/\:\  \     /:/\:\  \     /:|:|  |      /:/\:\  \        \:\  \     /:/\:\  \  
+  /::\~\:\  \   /::\~\:\  \   _\:\~\ \  \      |:|__|__   /:/  \:\__\   /:/  \:\  \   /:/|:|  |__   /::\~\:\  \       /::\  \   /::\~\:\  \ 
+ /:/\:\ \:\__\ /:/\:\ \:\__\ /\ \:\ \ \__\     /::::\__\ /:/__/ \:|__| /:/__/ \:\__\ /:/ |:| /\__\ /:/\:\ \:\__\     /:/\:\__\ /:/\:\ \:\__\
+ \:\~\:\ \/__/ \/__\:\/:/  / \:\ \:\ \/__/    /:/~~/~    \:\  \ /:/  / \:\  \ /:/  / \/__|:|/:/  / \/__\:\/:/  /    /:/  \/__/ \:\~\:\ \/__/
+  \:\ \:\__\        \::/  /   \:\ \:\__\     /:/  /       \:\  /:/  /   \:\  /:/  /      |:/:/  /       \::/  /    /:/  /       \:\ \:\__\  
+   \:\ \/__/        /:/  /     \:\/:/  /     \/__/         \:\/:/  /     \:\/:/  /       |::/  /        /:/  /     \/__/         \:\ \/__/  
+    \:\__\         /:/  /       \::/  /                     \::/__/       \::/  /        /:/  /        /:/  /                     \:\__\    
+     \/__/         \/__/         \/__/                       ~~            \/__/         \/__/         \/__/                       \/__/ 
+
+	WARNING: HITCHHIKERS MAY BE ESCAPED CONVICTS
+!-->
+<html>
+	<head>
+		<link href="${req.static_url('EasyDonate:static/css/style.css')}" rel="stylesheet" type="text/css">
+		<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700|Open+Sans:300italic,400italic,400,700,800,600,300' rel='stylesheet' type='text/css'>
+		<script src="${req.static_url('EasyDonate:static/lib/jquery.min.js')}"></script>
+		<script src="${req.static_url('EasyDonate:static/lib/easydonate.js')}"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>${community}Admin</title>
+	</head>
+	<body>
+		<div class="admin">
+			<div class='nav-bar'>
+				<a href="${req.route_url('admin')}" style="position:absolute;margin:0;margin-top:12px;display:inline-block;">
+					<img src="${req.static_url('EasyDonate:static/css/img/logo-noshadow.png')}" style="width:auto;height:52px;margin-left:52px;">
+				</a>
+				<ul>
+					<li><a href='has-sub'>Account <font size="2">▼</font></a>
+						<ul>
+							<li><a href='${req.route_url("admin/password")}'>Change Password</a></li>
+							<li><a href='${req.route_url("admin/account")}'>Manage Account</a></li>
+							<li class="last"><a href='${req.route_url("logout")}'>Logout</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<div class="side-menu">
+				<span style="display:block;margin-top:82px;margin-left:12px;font-weight:600;font-size:16px;">
+					<a href="${req.route_url('admin/users')}">Users</a>
+					<a href="${req.route_url('admin/servers')}">Servers</a>
+					<a href="${req.route_url('admin/orders')}">Active Orders</a>
+					<a href="${req.route_url('admin/products')}">Products</a>
+					<a href="${req.route_url('admin/promotions')}">Promotions</a>
+					<a tal:condition="permission == 'root'" href="${req.route_url('admin/config')}">Configuration</a>
+				</span>
+			</div>
+			<div class="path">
+				<span class="margin-left" tal:repeat="url path">
+					<a href="${url.url}">${url.name}</a>
+					<span class="margin-left" tal:condition="len(path) > 0 and path.index(url) != len(path) - 1">/</span>
+				</span>
+			</div>
+			<div metal:define-slot="content">
+				<div class="notice" tal:condition="settings.ReadOnly">
+					<div class="notice-heading">
+						<h3 class="notice-title">Notice</h3>
+					</div>
+					<span class="margin-left">EasyDonate is in Read-Only mode.</span>
+				</div>
+				<div class="module-div">
+					<div class="heading">
+						<img class="float-left" src='${req.static_url("EasyDonate:static/css/img/logo.png")}' style="margin-top:3px;height:40px;width:auto;display:inline-block;">
+						<h3 class="no-margin" style="margin-left: 50px;">At a glance</h3>
+						<span class="margin-left">
+							Welcome to the EasyDonate admin center
+						</span>
+					</div>
+					<div class='at-a-glance'>
+						<div class="heading">
+							<a href="${req.route_url('admin/servers')}">
+								<h3 class="title">Servers</h3>
+							</a>
+						</div>
+						<div class="margin-left">${len(info.servers)} Game Servers</div>
+					</div>
+					<div class='at-a-glance'>
+						<div class="heading">
+							<a href="${req.route_url('admin/orders')}">
+								<h3 class="title">Orders</h3>
+							</a>
+						</div>
+						<div class="margin-left">${len(info.orders)} Active Orders</div>
+					</div>
+					<div class='at-a-glance'>
+						<div class="heading">
+							<a href="${req.route_url('admin/products')}">
+								<h3 class="title">Products</h3>
+							</a>
+						</div>
+						<div class="margin-left">${len(info.products)} Products</div>
+					</div>
+					<div class='at-a-glance'>
+						<div class="heading">
+							<a href="${req.route_url('admin/promotions')}">
+								<h3 class="title">Promotions</h3>
+							</a>
+						</div>
+						<div class="margin-left">${len(info.promotions)} Promotions</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
