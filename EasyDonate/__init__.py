@@ -97,7 +97,7 @@ def main(global_config, **settings):
 	config.add_route('admin/products/groups', '/admin/products/groups')
 	config.add_route('admin/products/servers', '/admin/products/servers/{server}')
 	
-	config.add_route('api', '/api/{interface}/{method}')
+	config.add_route('api', '/api/*traverse', factory='.EDAPI.API_Root')
 	
 	config.scan('.EDViews')
 

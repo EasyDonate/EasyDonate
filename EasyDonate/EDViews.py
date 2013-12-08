@@ -223,80 +223,10 @@ def cancel(request):
 #=============================================#
 #=====================API=====================#	
 @view_config(route_name='api', renderer='prettyjson')
-def api(request):
-	if request.matchdict['interface'] == 'IServers':
-		if not 'key' in request.GET or request.GET['key'] != Settings.APIKey:
-			return HTTPForbidden()
-		if request.matchdict['method'] == 'GetServerList':
-			servers = Settings.Session.query(Server).all()
-			return {'severs': [server.id for server in servers]}
-		elif request.matchdict['method'] == 'GetServerSummaries':
-			if not 'servers' in request.GET:
-				return HTTPBadRequest()
-			getservers = request.GET['servers'].split(',')
-			servers = Settings.Session.query(Server).filter(Server.id.in_(getservers)).all()
-			if not servers:
-				return HTTPBadRequest()
-			return {'servers': servers}
-		elif request.matchdict['method'] == 'GetServerItems':
-			if not 'sid' in request.GET:
-				return HTTPBadRequest()
-			server = Settings.Session.query(Server).filter(Server.id == request.GET['sid']).scalar()
-			if not server:
-				return HTTPBadRequest()
-			items = [{"itemid": item.item.id, "groupid": item.item.group_id} for item in server.items]
-			return {'item_count': len(items), 'items': items}
-		elif request.matchdict['method'] == 'GetServerSubs':
-			if not 'sid' in request.GET:
-				return HTTPBadRequest()
-			server = Settings.Session.query(Server).filter(Server.id == request.GET['sid']).scalar()
-			if not server:
-				return HTTPBadRequest()
-			subs = [{'subscriber': sub.id, 'item': sub.item_id} for sub in server.subs]
-			return {'subscriber_count': len(subs), 'subscribers': subs}
-	elif request.matchdict['interface'] == 'IItems':
-		if not 'key' in request.GET or request.GET['key'] != Settings.APIKey:
-			return HTTPForbidden()
-		if request.matchdict['method'] == 'GetItemDetails':
-			if not 'items' in request.GET:
-				return HTTPBadRequest()
-			getitems = request.GET['items'].split(',')
-			items = Settings.Session.query(Item).filter(Item.id.in_(getitems)).all()
-			if not items:
-				return HTTPBadRequest()
-			return {'items': items}
-		elif request.matchdict['method'] == 'GetGroupDetails':
-			if not 'groups' in request.GET:
-				return HTTPBadRequest()
-			getgroups = request.GET['groups'].split(',')
-			groups = Settings.Session.query(ItemGroup).filter(ItemGroup.id.in_(getgroups)).all()
-			if not groups:
-				return HTTPBadRequest()
-			return {'groups': groups}
-		elif request.matchdict['method'] == 'GetItemPromotions':
-			if not 'item' in request.GET:
-				return HTTPBadRequest()
-			item = Settings.Session.query(Item).filter(Item.id == request.GET['item']).scalar()
-			if not item:
-				return HTTPBadRequest()
-			return {'promotions': [promo.promotion for promo in item.promotions]}
-	elif request.matchdict['interface'] == 'ISubscribers':
-		if not 'key' in request.GET or request.GET['key'] != Settings.APIKey:
-			return HTTPForbidden()
-		if request.matchdict['method'] == 'GetSubscriberSummaries':
-			if not 'subscribers' in request.GET:
-				return HTTPBadRequest()
-			getsubs = request.GET['subscribers'].split(',')
-			subs = Settings.Session.query(Subscriber).filter(Subscriber.id.in_(getsubs)).all()
-			if not subs:
-				return HTTPBadRequest()
-			return {'subscribers': subs}
-		elif request.matchdict['method'] == 'SubscriberLookup':
-			if not 'steamid' or not 'sid' in request.GET:
-				return HTTPBadRequest()
-			subs = Settings.Session.query(Subscriber).filter(Subscriber.steamid == request.GET['steamid'] and Subscriber.serv_id == request.GET['sid']).all()
-			return {'subscribers': [{'id': sub.id, 'item': sub.item_id} for sub in subs]}
-	return HTTPNotFound()
+def api(context, request):
+	if not 'key' in request.GET or request.GET['key'] != Settings.APIKey:
+		return HTTPForbidden()
+	return context._call(request)
 	
 #=============================================#
 #===============Admin & Login=================#
