@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
 	name='EasyDonate',
-	version='1.0.0+dev1748',
+	version='1.0.0+dev1752',
 	author='Dreae',
 	author_email='dreae@easydonate.tk',
 	packages=find_packages(),
