@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest, HTTPForbidden
+from pyramid.httpexceptions import HTTPNotFound, HTTPBadRequest, HTTPForbidden, HTTPInternalServerError
 from .ORM import User, Server, Item, ServerItem, Subscriber, ItemGroup, Promotion, ItemPromotion
 from . import Settings
 import inspect
@@ -39,7 +39,7 @@ class IServers(APIInterface):
 	class GetServerList(object):
 		def _call(self, request):
 			servers = Settings.Session.query(Server).all()
-			return {'severs': [server.id for server in servers]}
+			return {'servers': [server.id for server in servers]}
 		def __init__(self):
 			pass
 		def __json__(self, request):
@@ -51,7 +51,7 @@ class IServers(APIInterface):
 			getservers = request.GET['servers'].split(',')
 			servers = Settings.Session.query(Server).filter(Server.id.in_(getservers)).all()
 			if not servers:
-				return HTTPBadRequest()
+				return HTTPInternalServerError()
 			return {'servers': servers}
 		def __init__(self):
 			pass
@@ -67,7 +67,7 @@ class IServers(APIInterface):
 				return HTTPBadRequest()
 			server = Settings.Session.query(Server).filter(Server.id == request.GET['sid']).scalar()
 			if not server:
-				return HTTPBadRequest()
+				return HTTPInternalServerError()
 			items = [{"itemid": item.item.id, "groupid": item.item.group_id} for item in server.items]
 			return {'item_count': len(items), 'items': items}
 		def __init__(self):
@@ -84,7 +84,7 @@ class IServers(APIInterface):
 				return HTTPBadRequest()
 			server = Settings.Session.query(Server).filter(Server.id == request.GET['sid']).scalar()
 			if not server:
-				return HTTPBadRequest()
+				return HTTPInternalServerError()
 			subs = [{'subscriber': sub.id, 'item': sub.item_id} for sub in server.subs]
 			return {'subscriber_count': len(subs), 'subscribers': subs}
 		def __init__(self):
@@ -105,7 +105,7 @@ class IItems(APIInterface):
 			getitems = request.GET['items'].split(',')
 			items = Settings.Session.query(Item).filter(Item.id.in_(getitems)).all()
 			if not items:
-				return HTTPBadRequest()
+				return HTTPInternalServerError()
 			return {'items': items}
 		def __init__(self):
 			pass
@@ -122,7 +122,7 @@ class IItems(APIInterface):
 			getgroups = request.GET['groups'].split(',')
 			groups = Settings.Session.query(ItemGroup).filter(ItemGroup.id.in_(getgroups)).all()
 			if not groups:
-				return HTTPBadRequest()
+				return HTTPInternalServerError()
 			return {'groups': groups}
 		def __init__(self):
 			pass
@@ -138,7 +138,7 @@ class IItems(APIInterface):
 				return HTTPBadRequest()
 			item = Settings.Session.query(Item).filter(Item.id == request.GET['item']).scalar()
 			if not item:
-				return HTTPBadRequest()
+				return HTTPInternalServerError()
 			return {'promotions': [promo.promotion for promo in item.promotions]}
 		def __init__(self):
 			pass
@@ -158,7 +158,7 @@ class ISubscribers(APIInterface):
 			getsubs = request.GET['subscribers'].split(',')
 			subs = Settings.Session.query(Subscriber).filter(Subscriber.id.in_(getsubs)).all()
 			if not subs:
-				return HTTPBadRequest()
+				return HTTPInternalServerError()
 			return {'subscribers': subs}
 		def __init__(self):
 			pass
